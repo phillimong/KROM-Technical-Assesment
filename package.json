@@ -1,0 +1,19 @@
+{
+  "name": "krom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm run start:dev --prefix api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phillimong/KROM-Technical-Assesment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phillimong/KROM-Technical-Assesment/issues"
+  },
+  "homepage": "https://github.com/phillimong/KROM-Technical-Assesment#readme"
+}
