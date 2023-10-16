@@ -29,7 +29,7 @@ export class UsersController {
       );
       return result;
     } catch (error) {
-      console.log(error);
+      return error.message;
     }
   }
 }
