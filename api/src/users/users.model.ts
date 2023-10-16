@@ -16,6 +16,10 @@ export class User {
 
   @Prop()
   email: string;
+
+  //user has many contacts
+  @Prop()
+  contacts: Contact[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

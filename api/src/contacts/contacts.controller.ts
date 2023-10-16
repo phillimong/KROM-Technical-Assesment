@@ -40,4 +40,10 @@ export class ContactsController {
   ): Promise<Contact> {
     return await this.contactsService.decrypt(id, user);
   }
+
+  @Get('user')
+  async getUserContacts(@Body('id') id: string): Promise<Contact[]> {
+    const contacts = await this.usersService.getUserContacts({ _id: id });
+    return contacts;
+  }
 }
