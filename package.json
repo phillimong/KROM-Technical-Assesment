@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/phillimong/KROM-Technical-Assesment/issues"
   },
-  "homepage": "https://github.com/phillimong/KROM-Technical-Assesment#readme"
+  "homepage": "https://github.com/phillimong/KROM-Technical-Assesment#readme",
+  "dependencies": {
+    "@nestjs/mongoose": "^10.0.1",
+    "class-validator": "^0.14.0",
+    "mongoose": "^7.6.2",
+    "mongoose-unique-validator": "^4.0.0"
+  }
 }
