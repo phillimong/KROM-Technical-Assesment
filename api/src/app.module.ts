@@ -8,6 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
+import { ContactsModule } from './contacts/contacts.module';
 //enable dotenv
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -17,6 +18,7 @@ dotenv.config();
     MongooseModule.forRoot(`${process.env.MONGO_URI}`),
     UsersModule,
     AuthModule,
+    ContactsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
