@@ -4,6 +4,7 @@ import { ContactSchema } from './contacts.model';
 import { UserSchema } from 'src/users/users.model';
 import { ContactsController } from './contacts.controller';
 import { ContactsService } from './contacts.service';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { ContactsService } from './contacts.service';
     MongooseModule.forFeature([{ name: 'user', schema: UserSchema }]),
   ],
   controllers: [ContactsController],
-  providers: [ContactsService],
+  providers: [ContactsService, UsersService],
 })
 export class ContactsModule {}
