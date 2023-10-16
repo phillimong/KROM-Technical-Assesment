@@ -1,6 +1,8 @@
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import { Body, Controller, UseGuards, Post, Get, Param } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ContactsService } from './contacts.service';
 import { UsersService } from 'src/users/users.service';
+import { PassportModule } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 
 import { Contact } from './contacts.model';
@@ -11,6 +13,7 @@ export class ContactsController {
     private readonly contactsService: ContactsService,
     private readonly usersService: UsersService,
   ) {}
+  @UseGuards(AuthGuard('jwt'))
   @Post('new')
   async createContact(
     @Body('name') name: string,
@@ -33,6 +36,7 @@ export class ContactsController {
       user,
     );
   }
+  @UseGuards(AuthGuard('jwt'))
   @Get('find')
   async getContactById(
     @Body('id') id: string,
@@ -40,7 +44,7 @@ export class ContactsController {
   ): Promise<Contact> {
     return await this.contactsService.decrypt(id, user);
   }
-
+  @UseGuards(AuthGuard('jwt'))
   @Get('user')
   async getUserContacts(@Body('id') id: string): Promise<Contact[]> {
     const contacts = await this.usersService.getUserContacts({ _id: id });
