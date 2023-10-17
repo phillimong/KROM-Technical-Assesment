@@ -32,7 +32,7 @@ export class ContactsController {
       user,
     );
     console.log(contact);
-    // return await this.usersService.addContactToUser(user, contact._id);
+    return await this.usersService.addContactToUser(user, contact._id);
     return contact;
   }
   @Get('find')
