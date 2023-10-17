@@ -21,6 +21,7 @@
     "class-validator": "^0.14.0",
     "mongoose": "^7.6.2",
     "mongoose-unique-validator": "^4.0.0",
-    "passport-jwt": "^4.0.1"
+    "passport-jwt": "^4.0.1",
+    "util": "^0.12.5"
   }
 }

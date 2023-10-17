@@ -1,9 +1,7 @@
-import { Body, Controller, UseGuards, Post, Get, Param } from '@nestjs/common';
+import { Body, Controller, UseGuards, Post, Get, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ContactsService } from './contacts.service';
 import { UsersService } from 'src/users/users.service';
-import { PassportModule } from '@nestjs/passport';
-import * as bcrypt from 'bcrypt';
 
 import { Contact } from './contacts.model';
 
@@ -27,22 +25,35 @@ export class ContactsController {
     const encryptedphone = await this.contactsService.encrypt(phone);
     const encryptedmessage = await this.contactsService.encrypt(message);
     const user = await this.usersService.getUser({ _id: userId });
+    //Buffer to string
     const contact = await this.contactsService.createContact(
-      encryptedname,
-      encryptedemail,
-      encryptedphone,
-      encryptedmessage,
+      encryptedname.toString(),
+      encryptedemail.toString(),
+      encryptedphone.toString(),
+      encryptedmessage.toString(),
       user,
     );
     return await this.usersService.addContactToUser(contact._id);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('find')
-  async getContactById(
-    @Body('id') id: string,
-    @Body('user') user: string,
-  ): Promise<Contact> {
-    return await this.contactsService.decrypt(id, user);
+  async getContactById(@Query('id') id: string): Promise<Contact> {
+    const contact = await this.contactsService.getContactById(id);
+    const decryptedname = await this.contactsService.decrypt(contact.name);
+    const decryptedemail = await this.contactsService.decrypt(contact.email);
+    const decryptedphone = await this.contactsService.decrypt(contact.phone);
+    const decryptedmessage = await this.contactsService.decrypt(
+      contact.message,
+    );
+    // console.log(contact);
+    return {
+      _id: contact._id,
+      name: decryptedname,
+      email: decryptedemail,
+      phone: decryptedphone,
+      message: decryptedmessage,
+      user: contact.user,
+    };
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('user')
