@@ -27,25 +27,26 @@ export class ContactsController {
     const user = await this.usersService.getUser({ _id: userId });
     //Buffer to string
     const contact = await this.contactsService.createContact(
-      encryptedname.toString(),
-      encryptedemail.toString(),
-      encryptedphone.toString(),
-      encryptedmessage.toString(),
+      encryptedname,
+      encryptedemail,
+      encryptedphone,
+      encryptedmessage,
       user,
     );
     return await this.usersService.addContactToUser(contact._id);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('find')
-  async getContactById(@Query('id') id: string): Promise<Contact> {
+  async getContactById(@Query('id') id: string): Promise<Object> {
     const contact = await this.contactsService.getContactById(id);
+    console.log(contact);
     const decryptedname = await this.contactsService.decrypt(contact.name);
     const decryptedemail = await this.contactsService.decrypt(contact.email);
     const decryptedphone = await this.contactsService.decrypt(contact.phone);
     const decryptedmessage = await this.contactsService.decrypt(
       contact.message,
     );
-    // console.log(contact);
+
     return {
       _id: contact._id,
       name: decryptedname,

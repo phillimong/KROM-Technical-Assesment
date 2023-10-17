@@ -12,16 +12,16 @@ export class Contact {
   @Prop({ type: 'ObjectId', auto: true })
   _id: object;
   @Prop()
-  name: string;
+  name: Buffer;
 
   @Prop()
-  email: string;
+  email: Buffer;
 
   @Prop()
-  phone: string;
+  phone: Buffer;
 
   @Prop()
-  message: string;
+  message: Buffer;
 
   @Prop({ type: 'ObjectId', ref: 'User', required: true, index: true })
   user: object;

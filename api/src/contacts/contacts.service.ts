@@ -15,10 +15,10 @@ export class ContactsService {
     @InjectModel('contact') private contactModel: Model<ContactDocument>,
   ) {}
   async createContact(
-    name: string,
-    email: string,
-    phone: string,
-    message: string,
+    name: Buffer,
+    email: Buffer,
+    phone: Buffer,
+    message: Buffer,
     user: User,
   ): Promise<Contact> {
     return this.contactModel.create({ name, email, phone, message, user });
@@ -33,15 +33,11 @@ export class ContactsService {
     let encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
     return encrypted;
   }
-  async decrypt(value: string): Promise<string> {
+  async decrypt(value: Buffer): Promise<string> {
     //string to buffer
-    const valueBuffer = Buffer.from(value, 'utf-8');
     const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
     const decipher = createDecipheriv('aes-256-ctr', key, iv);
-    let decrypted = Buffer.concat([
-      decipher.update(valueBuffer),
-      decipher.final(),
-    ]).toString();
-    return decrypted;
+    let decrypted = Buffer.concat([decipher.update(value), decipher.final()]);
+    return decrypted.toString();
   }
 }
