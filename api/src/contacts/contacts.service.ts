@@ -58,6 +58,7 @@ export class ContactsService {
       phone: decryptedphone,
       message: decryptedmessage,
       user: user,
+      _id: contact._id,
     };
 
     return decryptedcontact;

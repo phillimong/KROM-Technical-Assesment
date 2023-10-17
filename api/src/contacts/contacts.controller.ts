@@ -16,25 +16,25 @@ export class ContactsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('new')
   async createContact(
+    @Query('id') userId: string,
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('phone') phone: string,
     @Body('message') message: string,
-    @Body('userId') userId: string,
-    //get userId from params
   ): Promise<Contact> {
     const encryptedname = await this.contactsService.encrypt(name);
     const encryptedemail = await this.contactsService.encrypt(email);
     const encryptedphone = await this.contactsService.encrypt(phone);
     const encryptedmessage = await this.contactsService.encrypt(message);
     const user = await this.usersService.getUser({ _id: userId });
-    return await this.contactsService.createContact(
+    const contact = await this.contactsService.createContact(
       encryptedname,
       encryptedemail,
       encryptedphone,
       encryptedmessage,
       user,
     );
+    return await this.usersService.addContactToUser(contact._id);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('find')
