@@ -8,7 +8,8 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
   //modify object ID to be a uuid
-
+  @Prop({ type: 'ObjectId', auto: true })
+  _id: object;
   @Prop()
   @IsString()
   username: string;

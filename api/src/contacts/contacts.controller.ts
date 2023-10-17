@@ -31,9 +31,7 @@ export class ContactsController {
       encryptedmessage,
       user,
     );
-    console.log(contact);
-    return await this.usersService.addContactToUser(user, contact._id);
-    return contact;
+    return await this.usersService.addContactToUser(contact._id);
   }
   @Get('find')
   async getContactById(

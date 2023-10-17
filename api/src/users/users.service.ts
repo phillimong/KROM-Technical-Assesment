@@ -29,11 +29,10 @@ export class UsersService {
     return await this.userModel.findOne(query).populate('contacts');
   }
 
-  async addContactToUser(user: User, contactId: any): Promise<any> {
-    console.log(contactId);
+  async addContactToUser(contactId: object): Promise<any> {
     const contact = await this.contactsService.getContactById(contactId);
-    const userContact = await this.userModel.findOne({ user });
-    console.log(userContact);
+    const user = contact.user;
+    const userContact = await this.userModel.findById(user);
     userContact.contacts.push(contact);
     return await userContact.save();
   }
