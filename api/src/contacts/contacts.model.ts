@@ -5,6 +5,12 @@ export type ContactDocument = Contact & Document;
 
 @Schema()
 export class Contact {
+  //add Id definition
+  // @Prop({ type: 'ObjectId' })
+  // _id: object;
+  //add autogenerate id
+  @Prop({ type: 'ObjectId', auto: true })
+  _id: object;
   @Prop()
   name: string;
 
@@ -17,7 +23,7 @@ export class Contact {
   @Prop()
   message: string;
 
-  @Prop({ type: 'ObjectId', ref: 'User' })
+  @Prop({ type: 'ObjectId', ref: 'User', required: true, index: true })
   user: string;
 }
 

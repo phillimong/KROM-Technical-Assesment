@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Query } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -13,25 +13,27 @@ export class ContactsController {
   ) {}
   @Post('new')
   async createContact(
+    @Query('id') userId: string,
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('phone') phone: string,
     @Body('message') message: string,
-    @Body('userId') userId: string,
-    //get userId from params
   ): Promise<Contact> {
     const encryptedname = await this.contactsService.encrypt(name);
     const encryptedemail = await this.contactsService.encrypt(email);
     const encryptedphone = await this.contactsService.encrypt(phone);
     const encryptedmessage = await this.contactsService.encrypt(message);
     const user = await this.usersService.getUser({ _id: userId });
-    return await this.contactsService.createContact(
+    const contact = await this.contactsService.createContact(
       encryptedname,
       encryptedemail,
       encryptedphone,
       encryptedmessage,
       user,
     );
+    console.log(contact);
+    // return await this.usersService.addContactToUser(user, contact._id);
+    return contact;
   }
   @Get('find')
   async getContactById(

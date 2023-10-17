@@ -27,7 +27,7 @@ export class User {
   email: string;
 
   //user has many contacts
-  @Prop()
+  @Prop({})
   contacts: Contact[];
 }
 
