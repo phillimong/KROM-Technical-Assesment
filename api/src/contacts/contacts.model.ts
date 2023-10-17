@@ -24,7 +24,7 @@ export class Contact {
   message: string;
 
   @Prop({ type: 'ObjectId', ref: 'User', required: true, index: true })
-  user: string;
+  user: object;
 }
 
 export const ContactSchema = SchemaFactory.createForClass(Contact);

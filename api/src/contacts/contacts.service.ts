@@ -2,17 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Contact, ContactDocument } from './contacts.model';
-import * as crypto from 'crypto';
+import { createCipheriv, randomBytes, scrypt, createDecipheriv } from 'crypto';
+import { promisify } from 'util';
 import { User } from 'src/users/users.model';
+
+const iv = randomBytes(16);
+const password = 'Password used to generate key';
 
 @Injectable()
 export class ContactsService {
   constructor(
     @InjectModel('contact') private contactModel: Model<ContactDocument>,
   ) {}
-  private readonly algorithim = 'aes-256-cbc';
-  private readonly secretKey = crypto.randomBytes(32);
-  private readonly iv = crypto.randomBytes(16);
   async createContact(
     name: string,
     email: string,
@@ -23,44 +24,24 @@ export class ContactsService {
     return this.contactModel.create({ name, email, phone, message, user });
   }
   async getContactById(query): Promise<Contact> {
-    return await this.contactModel.findById(query);
+    return await this.contactModel.findOne({ _id: query });
   }
 
-  async encrypt(text: string): Promise<string> {
-    const cipher = crypto.createCipheriv(
-      this.algorithim,
-      this.secretKey,
-      this.iv,
-    );
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+  async encrypt(text: string): Promise<Buffer> {
+    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
+    const cipher = createCipheriv('aes-256-ctr', key, iv);
+    let encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
     return encrypted;
   }
-  async decrypt(id: string, user: string): Promise<Contact> {
-    const decipher = crypto.createDecipheriv(
-      this.algorithim,
-      this.secretKey,
-      this.iv,
-    );
-
-    const contact = await this.contactModel.findById(id);
-    let decyptedname = decipher.update(contact.name, 'hex', 'utf8');
-    decyptedname += decipher.final('utf8');
-    let decryptedemail = decipher.update(contact.email, 'hex', 'utf8');
-    decryptedemail += decipher.final('utf8');
-    let decryptedphone = decipher.update(contact.phone, 'hex', 'utf8');
-    decryptedphone += decipher.final('utf8');
-    let decryptedmessage = decipher.update(contact.message, 'hex', 'utf8');
-    decryptedmessage += decipher.final('utf8');
-    let decryptedcontact = {
-      name: decyptedname,
-      email: decryptedemail,
-      phone: decryptedphone,
-      message: decryptedmessage,
-      user: user,
-      _id: contact._id,
-    };
-
-    return decryptedcontact;
+  async decrypt(value: string): Promise<string> {
+    //string to buffer
+    const valueBuffer = Buffer.from(value, 'utf-8');
+    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
+    const decipher = createDecipheriv('aes-256-ctr', key, iv);
+    let decrypted = Buffer.concat([
+      decipher.update(valueBuffer),
+      decipher.final(),
+    ]).toString();
+    return decrypted;
   }
 }
