@@ -27,6 +27,10 @@ export class ContactsService {
     return await this.contactModel.findOne({ _id: query });
   }
 
+  async getContactsByUserIds(query): Promise<Contact[]> {
+    return await this.contactModel.find({ user: query });
+  }
+
   async encrypt(text: string): Promise<Buffer> {
     const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
     const cipher = createCipheriv('aes-256-ctr', key, iv);
@@ -34,7 +38,6 @@ export class ContactsService {
     return encrypted;
   }
   async decrypt(value: Buffer): Promise<string> {
-    //string to buffer
     const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
     const decipher = createDecipheriv('aes-256-ctr', key, iv);
     let decrypted = Buffer.concat([decipher.update(value), decipher.final()]);

@@ -39,7 +39,6 @@ export class ContactsController {
   @Get('find')
   async getContactById(@Query('id') id: string): Promise<Object> {
     const contact = await this.contactsService.getContactById(id);
-    console.log(contact);
     const decryptedname = await this.contactsService.decrypt(contact.name);
     const decryptedemail = await this.contactsService.decrypt(contact.email);
     const decryptedphone = await this.contactsService.decrypt(contact.phone);
@@ -58,8 +57,8 @@ export class ContactsController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('user')
-  async getUserContacts(@Body('id') id: string): Promise<Contact[]> {
-    const contacts = await this.usersService.getUserContacts({ _id: id });
+  async getUserContacts(@Query('id') id: string): Promise<Contact[]> {
+    const contacts = await this.contactsService.getContactsByUserIds(id);
     return contacts;
   }
 }
