@@ -26,7 +26,7 @@ export class UsersService {
     return this.userModel.findOne(query);
   }
   async getUserContacts(query: object): Promise<Contact[]> {
-    return await this.userModel.findOne(query).populate('contacts');
+    return await this.userModel.find(query);
   }
 
   async addContactToUser(contactId: object): Promise<any> {
